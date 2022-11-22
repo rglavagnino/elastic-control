@@ -1,0 +1,18 @@
+version: "3"
+services:
+  #nombre del servicio
+  ditdabase:
+    container_name: ditdaelasticctrl
+    restart: always
+    build: .    
+    #puertos
+    ports:
+      - "5003:5003"
+
+  
+
+networks:
+  default:
+    name: ditdalab_ditdanet
+    external: true
+    
