@@ -30,4 +30,28 @@ export class UsuarioService {
 
         return log.crearLogYSalida("Exito en obtener usuario", 2, resul.hits.hits.map((item) => item._source))
     }
+
+
+
+    async buscarUsuarios(usuario:string, bus:string){
+        const idFuncion = 1001
+        const descrFun = "Buscar un datos en los usuarios"
+        const log = new MiLogger(usuario,idFuncion,descrFun)
+        log.crearLog('Buscando en usuarios ' + bus)
+        const _bus = "*" + bus + "*"
+        const resul = await this.elasticSearch.search<elasticHit>({
+            index:"usuarios",
+            body:{
+                query:{
+                   query_string:{
+                    "query": _bus
+                    
+                   }
+                }
+            }
+        })
+
+        return log.crearLogYSalida("Exito en obtener usuario", 2, resul.hits.hits.map((item) => item._source))
+ 
+    }
 }

@@ -39,4 +39,34 @@ export class UsuarioController {
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);
     }
+
+
+    @Post('buscar')
+    async buscarUsuarios(
+        @Res() res: Response,
+        @Headers('Authorization') token: string,
+        @Headers('usuario') usuario: string,
+        @Body('bus') bus: string,
+
+    ){
+
+        if (!token || !usuario) {
+            return res
+              .status(HttpStatus.FORBIDDEN)
+              .json({ msg: 'Falta la autenticación', flt: 'No seas ese tipo' });
+          }
+      
+          if (token !== tokenTemp)
+            return res
+              .status(HttpStatus.FORBIDDEN)
+              .json({ msg: 'No dijistes la palabra magica' });
+
+          const sal = await this.usuarioSrv.buscarUsuarios(usuario,bus);
+
+              const status = obtenerStatusHttp(sal);
+              return res.status(status).json(sal);
+    }
+
+
+
 }
