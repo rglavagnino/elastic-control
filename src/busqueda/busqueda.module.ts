@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
+import { BusquedaController } from './busqueda.controller';
+import { BusquedaService } from './busqueda.service';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { __ELASTICSERVER__ } from 'src/utils/servidores';
-import { UsuarioController } from './usuario.controller';
-import { UsuarioService } from './usuario.service';
 
 @Module({
-  controllers: [UsuarioController],
-  providers: [UsuarioService],
+  controllers: [BusquedaController],
+  providers: [BusquedaService],
   imports:[
     ElasticsearchModule.registerAsync({
       useFactory: () => ({
@@ -19,4 +19,4 @@ import { UsuarioService } from './usuario.service';
     })
   ]
 })
-export class UsuarioModule {}
+export class BusquedaModule {}

@@ -18,6 +18,7 @@ export class UsuarioService {
         const log = new MiLogger(usuario,idFuncion,descrFun)
         log.crearLog('Buscando el usuario ' + usuarioId)
         const resul = await this.elasticSearch.search<elasticHit>({
+      
             index:"usuarios",
             body:{
                 query:{
