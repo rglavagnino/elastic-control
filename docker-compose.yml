@@ -1,18 +1,18 @@
 version: "3"
 services:
   #nombre del servicio
-  ditdabase:
+  ditdaelasticctrl:
+    hostname: ditda-elastic-ctrl
     container_name: ditdaelasticctrl
     restart: always
     build: .    
     #puertos
     ports:
       - "5003:5003"
-
+    networks:
+      - core_ditdanet
   
-
 networks:
-  default:
-    name: ditdalab_ditdanet
+  core_ditdanet:
     external: true
-    
+

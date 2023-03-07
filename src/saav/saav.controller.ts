@@ -1,24 +1,22 @@
 import { Response } from 'express';
 import { tokenTemp } from 'src/utils/servidores';
 import { obtenerStatusHttp } from 'src/utils/salida';
-import { BusquedaService } from './busqueda.service';
-import { Controller, Post, Res, Headers,Body, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Put, Res, Headers,Body, HttpStatus } from '@nestjs/common';
+import { SaavService } from './saav.service';
 
+@Controller('saav')
+export class SaavController {
 
-@Controller('busqueda')
-export class BusquedaController {
-
-    constructor( private busSrv:BusquedaService){}
+    constructor( private saaSrv: SaavService){}
 
     @Post()
     async buscar(
         @Res() res: Response,
         @Headers('Authorization') token: string,
         @Headers('usuario') usuario: string,
-        @Body('bus') bus: string,
-        @Body('pagina') pag: number,
-        @Body('bases') bases: string
-
+        @Body('nosesion') nos: string,
+        @Body('linea') lin: string,
+        
     ){
 
         if (!token || !usuario) {
@@ -31,11 +29,10 @@ export class BusquedaController {
             return res
               .status(HttpStatus.FORBIDDEN)
               .json({ msg: 'No dijistes la palabra magica' });
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases);
+
+          const sal = await this.saaSrv.obtenerSesion(usuario,nos,lin);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);
     }
-
-    
 }

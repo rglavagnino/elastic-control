@@ -8,9 +8,9 @@ export class BusquedaService {
 
     constructor( private readonly elasticSearch:ElasticsearchService){}
 
-    async buscar(usuario:string, bus:string, pagina:number){
+    async buscar(usuario:string, bus:string, pagina:number, bases:string){
         const tam = 10
-
+        const arr: string[] = bases.split(',');
         const ini = pagina * tam
         const idFuncion = 2001
         const descrFun = "Buscar un dato en las bases de datos"
@@ -18,7 +18,7 @@ export class BusquedaService {
         log.crearLog('Buscando en bases ' + bus)
         const _bus = "*" + bus + "*"
         const resul = await this.elasticSearch.search<hit>({
-            index:"bases",
+            index:arr,//["dacs","saav","rutpdac"],
             from: ini,
             size: tam,
             body:{

@@ -1,6 +1,6 @@
 export function obtenerVersion(){
     return {
-        version:'0.0.01'
-        ,nombre:'Negro'
+        version:'0.0.02'
+        ,nombre:'Tigre'
     }
 }
