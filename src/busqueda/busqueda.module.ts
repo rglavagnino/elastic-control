@@ -13,7 +13,7 @@ import { __ELASTICSERVER__ } from 'src/utils/servidores';
         node: __ELASTICSERVER__,
         auth:{
           username: 'elastic',
-          password: '!zeaalfa1'
+          password: '6p85NdcZ'
         }
       })
     })

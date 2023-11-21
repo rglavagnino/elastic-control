@@ -17,7 +17,8 @@ export class BusquedaController {
         @Headers('usuario') usuario: string,
         @Body('bus') bus: string,
         @Body('pagina') pag: number,
-        @Body('bases') bases: string
+        @Body('bases') bases: string,
+        @Body('condicionante') cond : string
 
     ){
 
@@ -28,10 +29,24 @@ export class BusquedaController {
           }
       
           if (token !== tokenTemp)
+          {
             return res
-              .status(HttpStatus.FORBIDDEN)
-              .json({ msg: 'No dijistes la palabra magica' });
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases);
+            .status(HttpStatus.FORBIDDEN)
+            .json({ msg: 'No dijistes la palabra magica' });
+          }
+
+          console.log(cond)
+          
+          if (!cond) 
+            cond = 'or'
+          cond = cond.toUpperCase()
+          let condi = false
+          if (cond == 'OR') 
+            condi = false
+          else 
+            condi = true
+        
+          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);

@@ -1,18 +1,18 @@
 version: "3"
 services:
   #nombre del servicio
-  ditdaelasticctrl:
-    hostname: ditda-elastic-ctrl
-    container_name: ditdaelasticctrl
+  sia_busqueda:
+    hostname: sia_busqueda
+    container_name: sia_busqueda
     restart: always
     build: .    
     #puertos
     ports:
       - "5003:5003"
     networks:
-      - core_ditdanet
+      - siaa_ctrl_siaa_net
   
 networks:
-  core_ditdanet:
+  siaa_ctrl_siaa_net:
     external: true
 
