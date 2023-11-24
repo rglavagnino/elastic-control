@@ -18,6 +18,12 @@ export class BusquedaController {
         @Body('bus') bus: string,
         @Body('pagina') pag: number,
         @Body('bases') bases: string,
+        @Body('wild') wild:boolean,
+      @Body('fecIni') fecini:string,
+      @Body('fecFin') fecfin:string,
+      @Body('departamento') depto:string,
+
+
         @Body('condicionante') cond : string
 
     ){
@@ -35,8 +41,7 @@ export class BusquedaController {
             .json({ msg: 'No dijistes la palabra magica' });
           }
 
-          console.log(cond)
-          
+         
           if (!cond) 
             cond = 'or'
           cond = cond.toUpperCase()
@@ -46,7 +51,7 @@ export class BusquedaController {
           else 
             condi = true
         
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi);
+          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);
