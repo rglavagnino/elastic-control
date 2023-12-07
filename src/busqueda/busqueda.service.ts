@@ -50,7 +50,7 @@ export class BusquedaService {
                         fecha: {
                             gte: fechaIni,
                             lte: fechaFin,
-                            format: "yyyy-M-d" // Ajusta el formato según el formato real de tu campo datetime
+                            format: "yyyy-M-d HH:mm:ss" // Ajusta el formato según el formato real de tu campo datetime
                         }
                     }
                 });
