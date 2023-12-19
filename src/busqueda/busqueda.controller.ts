@@ -12,13 +12,13 @@ export class BusquedaController {
 
     @Post()
     async buscar(
-        @Res() res: Response,
-        @Headers('Authorization') token: string,
-        @Headers('usuario') usuario: string,
-        @Body('bus') bus: string,
-        @Body('pagina') pag: number,
-        @Body('bases') bases: string,
-        @Body('wild') wild:boolean,
+      @Res() res: Response,
+      @Headers('Authorization') token: string,
+      @Headers('usuario') usuario: string,
+      @Body('bus') bus: string,
+      @Body('pagina') pag: number,
+      @Body('bases') bases: string,
+      @Body('wild') wild:boolean,
       @Body('fecIni') fecini:string,
       @Body('fecFin') fecfin:string,
       @Body('departamento') depto:string,
