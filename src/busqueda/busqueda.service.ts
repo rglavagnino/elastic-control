@@ -10,7 +10,7 @@ export class BusquedaService {
 
     constructor( private readonly elasticSearch:ElasticsearchService){}
 
-    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string) {
+    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string ) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 
         if (and) operator = "and";
@@ -19,6 +19,8 @@ export class BusquedaService {
         const ini = (pagina -1 ) * tam;
         const idFuncion = 2001;
         const descrFun = "Buscar un dato en las bases de datos";
+
+        let minScore = 0.1
         
         const log = new MiLogger(usuario, idFuncion, descrFun);
         log.crearLog('Buscando en bases ' + bus);
@@ -55,13 +57,28 @@ export class BusquedaService {
                     }
                 });
             }
+
+            if (precision){
+               minScore = precision
+            }
+
+            if (caso){
+                query.query.bool.must.push({
+                    match: {
+                        base2: {
+                            query: caso.toLowerCase(),
+                            operator: operator
+                        }
+                    }
+                });
+            }
     
             if (departamento) {
                 query.query.bool.must.push({
                     match: {
                         departamento: {
                             query: departamento.toUpperCase(),
-                            operator: "and"
+                            operator: operator
                         }
                     }
                 });
@@ -71,7 +88,8 @@ export class BusquedaService {
                 index: arr,
                 from: ini,
                 size: tam,
-                body: query
+                body: query,
+                min_score: minScore
             });
 
             const datos = resul.hits.hits.map((item) => {
@@ -92,7 +110,7 @@ export class BusquedaService {
                 // Si es un objeto SearchTotalHits, extraer el valor
                 totalResultadosV = totalResultados.value;
             }
-            const maxScore = resul.hits.max_score as number;
+
  
             const regreso = {
                 resultados : datos,
