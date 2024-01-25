@@ -84,38 +84,53 @@ export class BusquedaService {
                 });
             }
     
+            console.log(minScore)
+
             const resul = await this.elasticSearch.search<hit>({
                 index: arr,
                 from: ini,
                 size: tam,
                 body: query,
-                min_score: minScore
+                min_score: minScore,
+                track_total_hits: true,
             });
-
-            const datos = resul.hits.hits.map((item) => {
-                const porcentajeScore = item._score / resul.hits.max_score * 100;
-    
-                return {
-                    _score: item._score,
-                    _porcentaje: porcentajeScore, // Nuevo campo con el porcentaje
-                    ...item._source,
-                };
-            });
-            const totalResultados = resul.hits.total
-            let totalResultadosV = 0
+            
+            // Obtener el puntaje máximo de los resultados
+            const maxScore = resul.hits.max_score;
+            
+            const scoreThreshold = maxScore * minScore;
+            
+            // Filtrar los resultados que tienen un puntaje superior al 90% del puntaje máximo
+            const datos = resul.hits.hits
+                .map(item => {
+                    const porcentajeScore = item._score / maxScore * 100;
+            
+                    return {
+                        _score: item._score,
+                        _porcentaje: porcentajeScore,
+                        ...item._source,
+                    };
+                })
+                .filter(item => item._score >= scoreThreshold);
+            
+            // Obtener el total de resultados
+            const totalResultados = resul.hits.total;
+            let totalResultadosV = 0;
+            
             if (typeof totalResultados === 'number') {
                 // Si es un número, devolverlo directamente
-                totalResultadosV = totalResultados as number; 
+                totalResultadosV = totalResultados;
             } else {
                 // Si es un objeto SearchTotalHits, extraer el valor
                 totalResultadosV = totalResultados.value;
             }
-
- 
+            
+            // Crear el objeto de retorno
             const regreso = {
-                resultados : datos,
-                total: totalResultadosV
-            }
+                resultados: datos,
+                total: totalResultadosV,
+            };
+            
             return log.crearLogYSalida(`Éxito en obtener los datos de la base ${operator}`, 2, regreso);
         } catch (error) {
             // Handle errors here
