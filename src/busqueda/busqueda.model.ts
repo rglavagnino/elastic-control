@@ -16,7 +16,7 @@ export interface hit{
     base3: string,
     base4: string,
     base5:string,
-    
+    version:string,
     departamento:string,
     base: string
 }

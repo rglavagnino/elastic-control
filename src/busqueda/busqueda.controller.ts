@@ -24,8 +24,10 @@ export class BusquedaController {
       @Body('departamento') depto:string,
       @Body('precision') pres: number,
       @Body('caso') caso:string,
-
-        @Body('condicionante') cond : string
+      @Body('casoMP') casoMP:string,
+      @Body('fiscalia') fiscalia:string,
+      @Body('tipoPersona') tipoPersona: string,
+      @Body('condicionante') cond : string
 
     ){
 
@@ -52,7 +54,7 @@ export class BusquedaController {
           else 
             condi = true
         
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto,pres,caso);
+          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto,pres,caso, casoMP,fiscalia, tipoPersona);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);

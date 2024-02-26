@@ -10,7 +10,7 @@ export class BusquedaService {
 
     constructor( private readonly elasticSearch:ElasticsearchService){}
 
-    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string ) {
+    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 
         if (and) operator = "and";
@@ -60,6 +60,39 @@ export class BusquedaService {
 
             if (precision){
                minScore = precision
+            }
+
+            if (casoMP){
+                query.query.bool.must.push({
+                    match: {
+                        base5: {
+                            query: casoMP.toUpperCase(),
+                            operator: operator
+                        }
+                    }
+                });
+            }
+
+            if (fiscalia){
+                query.query.bool.must.push({
+                    match: {
+                        base5: {
+                            query: fiscalia.toUpperCase(),
+                            operator: operator
+                        }
+                    }
+                });
+            }
+
+            if (tipoPersona){
+                query.query.bool.must.push({
+                    match: {
+                        base3: {
+                            query: tipoPersona,
+                            operator: operator
+                        }
+                    }
+                });
             }
 
             if (caso){
