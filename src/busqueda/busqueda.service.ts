@@ -10,6 +10,14 @@ export class BusquedaService {
 
     constructor( private readonly elasticSearch:ElasticsearchService){}
 
+
+
+
+
+
+
+
+
     async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 
@@ -30,7 +38,7 @@ export class BusquedaService {
         //const _bus =  bus ;
 
         try {
-            const query: any = {
+            let query:any =   {
                 query: {
                     bool: {
                         must: [
@@ -45,6 +53,23 @@ export class BusquedaService {
                 },
                 _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6"]
             };
+            if (pagina == -100){
+                query  = {
+                    query: {
+                        bool: {
+                            must: [
+                                {
+                                    query_string: {
+                                        query: _bus,
+                                        default_operator: operator
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    _source: [ "base5"]
+                };
+            }
     
             if (fechaIni && fechaFin) {
                 query.query.bool.must.push({
@@ -117,24 +142,22 @@ export class BusquedaService {
                 });
             }
     
-            console.log(minScore)
 
-            const resul = await this.elasticSearch.search<hit>({
-                index: arr,
-                from: ini,
-                size: tam,
-                body: query,
-                min_score: minScore,
-                track_total_hits: true,
-            });
-            
+            if (pagina == -100) {
+                const tot =  await this.elasticSearch.search<hit>({
+                    index: arr,
+                    body: query,
+                    min_score: minScore,
+                    track_total_hits: true,
+                });
+
             // Obtener el puntaje máximo de los resultados
-            const maxScore = resul.hits.max_score;
-            
+            const maxScore = tot.hits.max_score;
+                
             const scoreThreshold = maxScore * minScore;
             
             // Filtrar los resultados que tienen un puntaje superior al 90% del puntaje máximo
-            const datos = resul.hits.hits
+            const datos = tot.hits.hits
                 .map(item => {
                     const porcentajeScore = item._score / maxScore * 100;
             
@@ -147,7 +170,7 @@ export class BusquedaService {
                 .filter(item => item._score >= scoreThreshold);
             
             // Obtener el total de resultados
-            const totalResultados = resul.hits.total;
+            const totalResultados = tot.hits.total;
             let totalResultadosV = 0;
             
             if (typeof totalResultados === 'number') {
@@ -163,8 +186,59 @@ export class BusquedaService {
                 resultados: datos,
                 total: totalResultadosV,
             };
-            
-            return log.crearLogYSalida(`Éxito en obtener los datos de la base ${operator}`, 2, regreso);
+                
+                return log.crearLogYSalida(`Éxito en obtener los datos de la base ${operator}`, 2, regreso);
+                
+            }
+            else {
+
+                const resul = await this.elasticSearch.search<hit>({
+                    index: arr,
+                    from: ini,
+                    size: tam,
+                    body: query,
+                    min_score: minScore,
+                    track_total_hits: true,
+                });
+                
+                // Obtener el puntaje máximo de los resultados
+                const maxScore = resul.hits.max_score;
+                
+                const scoreThreshold = maxScore * minScore;
+                
+                // Filtrar los resultados que tienen un puntaje superior al 90% del puntaje máximo
+                const datos = resul.hits.hits
+                    .map(item => {
+                        const porcentajeScore = item._score / maxScore * 100;
+                
+                        return {
+                            _score: item._score,
+                            _porcentaje: porcentajeScore,
+                            ...item._source,
+                        };
+                    })
+                    .filter(item => item._score >= scoreThreshold);
+                
+                // Obtener el total de resultados
+                const totalResultados = resul.hits.total;
+                let totalResultadosV = 0;
+                
+                if (typeof totalResultados === 'number') {
+                    // Si es un número, devolverlo directamente
+                    totalResultadosV = totalResultados;
+                } else {
+                    // Si es un objeto SearchTotalHits, extraer el valor
+                    totalResultadosV = totalResultados.value;
+                }
+                
+                // Crear el objeto de retorno
+                const regreso = {
+                    resultados: datos,
+                    total: totalResultadosV,
+                };
+                
+                return log.crearLogYSalida(`Éxito en obtener los datos de la base ${operator}`, 2, regreso);
+            }
         } catch (error) {
             // Handle errors here
             log.crearLogYSalida(`Error en la búsqueda: ${error.message}`, 0, []);
@@ -173,10 +247,8 @@ export class BusquedaService {
 
     obtenerTotalResultados(total: number | { value: number }): number {
         if (typeof total === 'number') {
-            // Si es un número, devolverlo directamente
             return total;
         } else {
-            // Si es un objeto con la propiedad 'value', extraer el valor
             return total.value;
         }
     }
