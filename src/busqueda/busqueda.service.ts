@@ -51,7 +51,7 @@ export class BusquedaService {
                         ]
                     }
                 },
-                _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6"]
+                _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6", "fiscaliaactual", "delito","estadoexpediente","departamentohecho","municipiohecho","zonahecho","fecha_hecho", "fecha_denuncia"]
             };
             if (pagina == -100){
                 query  = {
