@@ -35,6 +35,8 @@ export class BusquedaService {
         let w = ''
         if (wild)  w = '*'
          const _bus = w + bus + w;
+
+        
         //const _bus =  bus ;
 
         try {
