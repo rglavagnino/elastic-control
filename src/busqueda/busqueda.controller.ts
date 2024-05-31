@@ -27,10 +27,15 @@ export class BusquedaController {
       @Body('casoMP') casoMP:string,
       @Body('fiscalia') fiscalia:string,
       @Body('tipoPersona') tipoPersona: string,
-      @Body('condicionante') cond : string
+      @Body('condicionante') cond : string,
+      @Body('fecIniDen') fecInDen: string,
+      @Body('fecFinDen') fecFinDen: string,
+      @Body('fecIniHec') fecInHec:string,
+      @Body('fecFinHec') fecFinHec: string
+
 
     ){
-
+      console.log(fecInDen,fecFinDen)
         if (!token || !usuario) {
             return res
               .status(HttpStatus.FORBIDDEN)
@@ -54,7 +59,7 @@ export class BusquedaController {
           else 
             condi = true
         
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto,pres,caso, casoMP,fiscalia, tipoPersona);
+          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto,pres,caso, casoMP,fiscalia, tipoPersona, fecInDen, fecFinDen, fecInHec, fecFinHec);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);

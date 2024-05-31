@@ -18,10 +18,15 @@ export class BusquedaService {
 
 
 
-    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string) {
+    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string,  fecInDen?:string, fecFinDen?:string, fecInHec?:string, fecFinHec?:string) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 
         if (and) operator = "and";
+
+        console.log("fecha inicio denu",fecInDen)
+        console.log("fecha final denu",fecFinDen)
+        console.log("fecha inicio hecho",fecInHec)
+        console.log("fecha final hecho",fecFinHec)
         
         const arr: string[] = bases.split(',');
         const ini = (pagina -1 ) * tam;
@@ -53,7 +58,7 @@ export class BusquedaService {
                         ]
                     }
                 },
-                _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6", "fiscaliaactual", "delito","estadoexpediente","departamentohecho","municipiohecho","zonahecho","fecha_hecho", "fecha_denuncia"]
+                _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6", "fiscaliaactual", "delito","estadoexpediente","departamentohecho","municipiohecho","zonahecho","fecha_hecho", "fecha_denuncia","responsable"]
             };
             if (pagina == -100){
                 query  = {
@@ -79,6 +84,32 @@ export class BusquedaService {
                         fecha: {
                             gte: fechaIni,
                             lte: fechaFin,
+                            format: "yyyy-M-d HH:mm:ss" // Ajusta el formato según el formato real de tu campo datetime
+                        }
+                    }
+                });
+            }
+
+
+            if (fecInDen && fecFinDen) {
+                console.log(fecInDen,fecFinDen)
+                query.query.bool.must.push({
+                    range: {
+                        fecha_hecho: {
+                            gte: fecInDen,
+                            lte: fecFinDen,
+                            format: "yyyy-M-d HH:mm:ss" // Ajusta el formato según el formato real de tu campo datetime
+                        }
+                    }
+                });
+            }
+
+            if (fecInHec && fecFinHec) {
+                query.query.bool.must.push({
+                    range: {
+                        fecha_denuncia: {
+                            gte: fecInHec,
+                            lte: fecFinHec,
                             format: "yyyy-M-d HH:mm:ss" // Ajusta el formato según el formato real de tu campo datetime
                         }
                     }
