@@ -48,8 +48,8 @@ export class OacBusquedaService {
             from: ini,
             size: tam,
         });
-
-        return log.crearLogYSalida(`Éxito en obtener los datos de la base ${arr}`, 2, tot);
+        const results = tot.hits.hits.map(hit => hit._source);
+        return log.crearLogYSalida(`Éxito en obtener los datos de la base ${arr}`, 2, results);
 
     }
 }

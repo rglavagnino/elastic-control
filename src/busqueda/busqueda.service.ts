@@ -15,7 +15,7 @@ export class BusquedaService {
 
 
 
-    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string,  fecInDen?:string, fecFinDen?:string, fecInHec?:string, fecFinHec?:string) {
+    async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string,  fecInDen?:string, fecFinDen?:string, fecInHec?:string, fecFinHec?:string, deptoHecho?:string) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 
         if (and) operator = "and";
@@ -127,6 +127,20 @@ export class BusquedaService {
                     }
                 });
             }
+
+
+            if (deptoHecho){
+                query.query.bool.must.push({
+                    match: {
+                        departamentohecho: {
+                            query: deptoHecho,
+                            operator: operator
+                        }
+                    }
+                });
+            }
+
+
 
             if (fiscalia){
                 query.query.bool.must.push({
