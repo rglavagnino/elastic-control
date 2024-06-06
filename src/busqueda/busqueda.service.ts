@@ -15,9 +15,6 @@ export class BusquedaService {
 
 
 
-
-
-
     async buscar(usuario: string, bus: string, pagina: number, bases: string, and: boolean, wild:boolean, fechaIni?:string, fechaFin?:string, departamento?:string, precision?:number, caso?:string , casoMP?:string, fiscalia?:string, tipoPersona?:string,  fecInDen?:string, fecFinDen?:string, fecInHec?:string, fecFinHec?:string) {
         const tam = 10;
         let operator: QueryDslOperator = "or"; 

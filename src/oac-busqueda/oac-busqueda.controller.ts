@@ -1,14 +1,16 @@
 import { Response } from 'express';
 import { tokenTemp } from 'src/utils/servidores';
 import { obtenerStatusHttp } from 'src/utils/salida';
-import { BusquedaService } from './busqueda.service';
+
 import { Controller, Post, Res, Headers,Body, HttpStatus } from '@nestjs/common';
+import { OacBusquedaService } from './oac-busqueda.service';
+
+@Controller('oac')
+export class OacBusquedaController {
 
 
-@Controller('busqueda')
-export class BusquedaController {
 
-    constructor( private busSrv:BusquedaService){}
+    constructor( private busSrv:OacBusquedaService){}
 
     @Post()
     async buscar(
@@ -18,21 +20,7 @@ export class BusquedaController {
       @Body('bus') bus: string,
       @Body('pagina') pag: number,
       @Body('bases') bases: string,
-      @Body('wild') wild:boolean,
-      @Body('fecIni') fecini:string,
-      @Body('fecFin') fecfin:string,
-      @Body('departamento') depto:string,
-      @Body('precision') pres: number,
-      @Body('caso') caso:string,
-      @Body('casoMP') casoMP:string,
-      @Body('fiscalia') fiscalia:string,
-      @Body('tipoPersona') tipoPersona: string,
       @Body('condicionante') cond : string,
-      @Body('fecIniDen') fecInDen: string,
-      @Body('fecFinDen') fecFinDen: string,
-      @Body('fecIniHec') fecInHec:string,
-      @Body('fecFinHec') fecFinHec: string
-
 
     ){
 
@@ -59,7 +47,7 @@ export class BusquedaController {
           else 
             condi = true
         
-          const sal = await this.busSrv.buscar(usuario,bus,pag, bases, condi,wild,fecini,fecfin,depto,pres,caso, casoMP,fiscalia, tipoPersona, fecInDen, fecFinDen, fecInHec, fecFinHec);
+          const sal = await this.busSrv.buscarOac(usuario,bus,pag, bases, condi);
 
               const status = obtenerStatusHttp(sal);
               return res.status(status).json(sal);
@@ -67,8 +55,3 @@ export class BusquedaController {
 
     
 }
-
-
-
-
-
