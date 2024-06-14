@@ -49,7 +49,24 @@ export class OacBusquedaService {
             size: tam,
         });
         const results = tot.hits.hits.map(hit => hit._source);
-        return log.crearLogYSalida(`Éxito en obtener los datos de la base ${arr}`, 2, results);
+
+        const totalResultados = tot.hits.total;
+            let totalResultadosV = 0;
+            
+            if (typeof totalResultados === 'number') {
+                // Si es un número, devolverlo directamente
+                totalResultadosV = totalResultados;
+            } else {
+                // Si es un objeto SearchTotalHits, extraer el valor
+                totalResultadosV = totalResultados.value;
+            }
+            
+            // Crear el objeto de retorno
+            const regreso = {
+                resultados: results,
+                total: totalResultadosV,
+            };
+        return log.crearLogYSalida(`Éxito en obtener los datos de la base ${arr}`, 2, regreso);
 
     }
 }
