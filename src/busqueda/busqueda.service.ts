@@ -58,7 +58,7 @@ export class BusquedaService {
                 _source: ["_score", "base", "base1", "base2", "base3", "base4", "base5", "dia", "mes", "anio", "departamento", "baseFoto", "fecha", "base6", "fiscaliaactual", "delito","estadoexpediente","departamentohecho","municipiohecho","zonahecho","fecha_hecho", "fecha_denuncia","responsable"]
             };
             if (pagina == -100){
-                query  = {
+                query = {
                     query: {
                         bool: {
                             must: [
@@ -71,7 +71,8 @@ export class BusquedaService {
                             ]
                         }
                     },
-                    _source: [ "base5"]
+                    _source: ["base5"],
+                    size: 10000
                 };
             }
     
